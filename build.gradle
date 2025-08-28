@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.11.2'
+    id 'dev.architectury.loom' version '1.10-SNAPSHOT'
     id 'maven-publish'
     id("org.jetbrains.kotlin.jvm") version "2.2.0"
 }
@@ -12,12 +12,10 @@ base {
 }
 
 loom {
-    splitEnvironmentSourceSets()
 
     mods {
         "novaraids" {
             sourceSet sourceSets.main
-            sourceSet sourceSets.client
         }
     }
 }
@@ -30,14 +28,23 @@ repositories {
     maven {
         url = "https://maven.nucleoid.xyz"
     }
+    maven {
+        name = "NeoForged"
+        url = "https://maven.neoforged.net/releases"
+    }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation include("net.fabricmc.fabric-api:fabric-data-attachment-api-v1:1.4.1+9aea556b2d")
+    mappings loom.layered {
+        it.mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+        it.mappings("dev.architectury:yarn-mappings-patch-neoforge:$yarn_mappings_patch_neoforge_version")
+    }
+
+    neoForge("net.neoforged:neoforge:21.1.192")
+//    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+//    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+//    modImplementation include("net.fabricmc.fabric-api:fabric-data-attachment-api-v1:1.4.1+9aea556b2d")
 
     modImplementation include("club.minnced:discord-webhooks:${project.discord_webhooks_version}")
 
@@ -49,13 +56,13 @@ dependencies {
 //    modImplementation include('me.lucko:fabric-permissions-api:0.3.1')
 
     modImplementation include("net.kyori:adventure-text-minimessage:4.17.0")
-    modImplementation include("net.kyori:adventure-platform-fabric:5.14.1")
+    modImplementation include("net.kyori:adventure-platform-neoforge:6.0.1")
 
     modImplementation include("eu.pb4:sgui:1.6.1+1.21.1")
 
     implementation include("com.cronutils:cron-utils:9.2.1")
 
-    modImplementation "com.cobblemon:fabric:${project.cobblemon_version}"
+    modImplementation "com.cobblemon:neoforge:${project.cobblemon_version}"
 }
 
 processResources {

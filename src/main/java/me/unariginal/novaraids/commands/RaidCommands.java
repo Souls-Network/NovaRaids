@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.item.PokemonItem;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -57,16 +58,17 @@ import java.time.format.FormatStyle;
 import java.util.*;
 
 public class RaidCommands {
-    private final NovaRaids nr = NovaRaids.INSTANCE;
+    private static NovaRaids nr;
 
-    public RaidCommands() {
-        CommandRegistrationCallback.EVENT.register((commandDispatcher, commandRegistryAccess, registrationEnvironment) -> commandDispatcher.register(
+    public static void init(CommandDispatcher<ServerCommandSource> dispatcher) {
+        nr = NovaRaids.INSTANCE;
+        dispatcher.register(
             CommandManager.literal("raid")
-                    .executes(this::modInfo)
+                    .executes(RaidCommands::modInfo)
                     .then(
                             CommandManager.literal("reload")
                                     .requires(NovaRaidsPermissions.RELOAD)
-                                    .executes(this::reload)
+                                    .executes(RaidCommands::reload)
                     )
                     .then(
                             CommandManager.literal("start")
@@ -112,7 +114,7 @@ public class RaidCommands {
                                     .requires(NovaRaidsPermissions.STOP)
                                     .then(
                                             CommandManager.argument("id", IntegerArgumentType.integer(1))
-                                                    .executes(this::stop)
+                                                    .executes(RaidCommands::stop)
                                     )
                     )
                     .then(
@@ -249,7 +251,7 @@ public class RaidCommands {
                     .then(
                             CommandManager.literal("list")
                                     .requires(NovaRaidsPermissions.LIST)
-                                    .executes(this::list)
+                                    .executes(RaidCommands::list)
                     )
                     .then(
                             CommandManager.literal("join")
@@ -352,7 +354,7 @@ public class RaidCommands {
                                                             CommandManager.argument("placement", IntegerArgumentType.integer(1))
                                                                     .then(
                                                                             CommandManager.argument("total-players", IntegerArgumentType.integer(1))
-                                                                                    .executes(this::testRewards)
+                                                                                    .executes(RaidCommands::testRewards)
                                                                     )
                                                     )
                                     )
@@ -457,14 +459,14 @@ public class RaidCommands {
         ));
     }
 
-    private int reload(CommandContext<ServerCommandSource> ctx) {
+    private static int reload(CommandContext<ServerCommandSource> ctx) {
         nr.reloadConfig();
         if (NovaRaids.LOADED)
             ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(nr.messagesConfig().getMessage("reload_command"))));
         return 1;
     }
 
-    private int modInfo(CommandContext<ServerCommandSource> ctx) {
+    private static int modInfo(CommandContext<ServerCommandSource> ctx) {
         ServerPlayerEntity player = ctx.getSource().getPlayer();
         if (player != null) {
             player.sendMessage(TextUtils.deserialize("<gray><st><b><i>---------<reset><red> Nova Raids <reset><gray><st><b><i>---------"));
@@ -477,7 +479,7 @@ public class RaidCommands {
         return 1;
     }
 
-    private int checkbanned(CommandContext<ServerCommandSource> ctx, String type) {
+    private static int checkbanned(CommandContext<ServerCommandSource> ctx, String type) {
         if (NovaRaids.LOADED) {
             if (ctx.getSource().isExecutedByPlayer()) {
                 ServerPlayerEntity player = ctx.getSource().getPlayer();
@@ -767,7 +769,7 @@ public class RaidCommands {
         return 1;
     }
 
-    private void openContrabandGui(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player, DisplayItemGui gui, String type, int pageToOpen, Boss boss, Category category) {
+    private static void openContrabandGui(CommandContext<ServerCommandSource> ctx, ServerPlayerEntity player, DisplayItemGui gui, String type, int pageToOpen, Boss boss, Category category) {
         Map<ItemStack, String> displayItems = new HashMap<>();
         if (type.equalsIgnoreCase("pokemon")) {
             if (boss != null && category != null) {
@@ -1074,7 +1076,7 @@ public class RaidCommands {
         }
     }
 
-    private int testRewards(CommandContext<ServerCommandSource> ctx) {
+    private static int testRewards(CommandContext<ServerCommandSource> ctx) {
         String boss = StringArgumentType.getString(ctx, "boss");
         int placement = IntegerArgumentType.getInteger(ctx, "placement");
         int totalPlayers = IntegerArgumentType.getInteger(ctx, "total-players");
@@ -1201,7 +1203,7 @@ public class RaidCommands {
         return 1;
     }
 
-    private int skipphase(CommandContext<ServerCommandSource> ctx) {
+    private static int skipphase(CommandContext<ServerCommandSource> ctx) {
         if (NovaRaids.LOADED) {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             if (nr.activeRaids().containsKey(id)) {
@@ -1216,7 +1218,7 @@ public class RaidCommands {
         return 1;
     }
 
-    public int start(Boss bossInfo, ServerPlayerEntity player, ItemStack startingItem) {
+    public static int start(Boss bossInfo, ServerPlayerEntity player, ItemStack startingItem) {
         if (NovaRaids.LOADED) {
             if (!nr.server().getPlayerManager().getPlayerList().isEmpty() || nr.config().runRaidsWithNoPlayers) {
                 if (bossInfo != null) {
@@ -1284,7 +1286,7 @@ public class RaidCommands {
         return 0;
     }
 
-    private int stop(CommandContext<ServerCommandSource> ctx) {
+    private static int stop(CommandContext<ServerCommandSource> ctx) {
         if (NovaRaids.LOADED) {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             if (nr.activeRaids().containsKey(id)) {
@@ -1301,7 +1303,7 @@ public class RaidCommands {
         return 0;
     }
 
-    public int give(ServerPlayerEntity sourcePlayer, ServerPlayerEntity targetPlayer, String itemType, String bossName, String category, String key, int amount) {
+    public static int give(ServerPlayerEntity sourcePlayer, ServerPlayerEntity targetPlayer, String itemType, String bossName, String category, String key, int amount) {
         if (NovaRaids.LOADED) {
             ItemStack itemToGive;
             NbtCompound customData = new NbtCompound();
@@ -1564,7 +1566,7 @@ public class RaidCommands {
         return 1;
     }
 
-    private int list(CommandContext<ServerCommandSource> ctx) {
+    private static int list(CommandContext<ServerCommandSource> ctx) {
         if (NovaRaids.LOADED) {
             ServerPlayerEntity player = ctx.getSource().getPlayer();
             if (player != null) {
@@ -1711,7 +1713,7 @@ public class RaidCommands {
         return 1;
     }
 
-    private int queue(CommandContext<ServerCommandSource> ctx, int pageToOpen) {
+    private static int queue(CommandContext<ServerCommandSource> ctx, int pageToOpen) {
         if (NovaRaids.LOADED) {
             ServerPlayerEntity player = ctx.getSource().getPlayer();
             if (player != null) {

@@ -12,7 +12,7 @@ public class TextUtils {
     private static final NovaRaids nr = NovaRaids.INSTANCE;
 
     public static Text deserialize(String text) {
-        return nr.audience().toNative(MiniMessage.miniMessage().deserialize("<!i>" + text));
+        return nr.audience().asNative(MiniMessage.miniMessage().deserialize("<!i>" + text));
     }
 
     public static String parse(String text) {

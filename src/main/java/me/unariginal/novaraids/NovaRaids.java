@@ -7,18 +7,19 @@ import me.unariginal.novaraids.managers.EventManager;
 import me.unariginal.novaraids.managers.Raid;
 import me.unariginal.novaraids.managers.TickManager;
 import me.unariginal.novaraids.utils.WebhookHandler;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.kyori.adventure.platform.fabric.FabricServerAudiences;
+import net.kyori.adventure.platform.modcommon.MinecraftServerAudiences;
+import net.kyori.adventure.platform.modcommon.impl.server.ServerPlayerAudience;
 import net.minecraft.server.MinecraftServer;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class NovaRaids implements ModInitializer {
-    private static final String MOD_ID = "novaraids";
+@Mod(NovaRaids.MOD_ID)
+public class NovaRaids {
+    public static final String MOD_ID = "novaraids";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static NovaRaids INSTANCE;
     public static boolean LOADED = true;
@@ -35,14 +36,13 @@ public class NovaRaids implements ModInitializer {
 
     public boolean debug = false;
     private MinecraftServer server;
-    private FabricServerAudiences audience;
+    private MinecraftServerAudiences audience;
     private RaidCommands raidCommands;
 
     private final Map<Integer, Raid> activeRaids = new HashMap<>();
     private final Queue<QueueItem> queuedRaids = new LinkedList<>();
 
-    @Override
-    public void onInitialize() {
+    public NovaRaids(IEventBus bus) {
         INSTANCE = this;
 
         raidCommands = new RaidCommands();
@@ -50,7 +50,7 @@ public class NovaRaids implements ModInitializer {
         // Set up event handlers and configuration at server load
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;
-            this.audience = FabricServerAudiences.of(server);
+            this.audience = MinecraftServerAudiences.of(server);
 
             reloadConfig();
             if (LOADED) {
@@ -148,7 +148,7 @@ public class NovaRaids implements ModInitializer {
         return server;
     }
 
-    public FabricServerAudiences audience() {
+    public MinecraftServerAudiences audience() {
         return audience;
     }
 
