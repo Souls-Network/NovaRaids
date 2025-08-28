@@ -16,12 +16,12 @@ import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import kotlin.Unit;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.config.MessagesConfig;
 import me.unariginal.novaraids.data.bosssettings.Boss;
 import me.unariginal.novaraids.utils.BanHandler;
 import me.unariginal.novaraids.utils.GuiUtils;
+import me.unariginal.novaraids.utils.NovaRaidsPermissions;
 import me.unariginal.novaraids.utils.TextUtils;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -271,7 +271,7 @@ public class EventManager {
                                                         if (clickType.isLeft) {
                                                             if (raid.raidBossCategory().requirePass()) {
                                                                 if (nr.activeRaids().get(nr.getRaidId(raid)).stage() == 1) {
-                                                                    if (nr.activeRaids().get(nr.getRaidId(raid)).participatingPlayers().size() < nr.activeRaids().get(nr.getRaidId(raid)).maxPlayers() || nr.activeRaids().get(nr.getRaidId(raid)).maxPlayers() == -1 || Permissions.check(player, "novaraids.override")) {
+                                                                    if (nr.activeRaids().get(nr.getRaidId(raid)).participatingPlayers().size() < nr.activeRaids().get(nr.getRaidId(raid)).maxPlayers() || nr.activeRaids().get(nr.getRaidId(raid)).maxPlayers() == -1 || NovaRaidsPermissions.OVERRIDE.test(player)) {
                                                                         if (raid.addPlayer(player.getUuid(), true)) {
                                                                             itemStack.decrement(1);
                                                                             player.setStackInHand(hand, itemStack);
@@ -389,7 +389,7 @@ public class EventManager {
                                     if (raid.bossInfo().bossId().equalsIgnoreCase(bossName)) {
                                         if (raid.raidBossCategory().requirePass()) {
                                             if (raid.stage() == 1) {
-                                                if (raid.participatingPlayers().size() < raid.maxPlayers() || raid.maxPlayers() == -1 || Permissions.check(player, "novaraids.override")) {
+                                                if (raid.participatingPlayers().size() < raid.maxPlayers() || raid.maxPlayers() == -1 || NovaRaidsPermissions.OVERRIDE.test(player)) {
                                                     if (raid.addPlayer(player.getUuid(), true)) {
                                                         itemStack.decrement(1);
                                                         player.setStackInHand(hand, itemStack);

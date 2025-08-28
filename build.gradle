@@ -46,7 +46,7 @@ dependencies {
     include("com.squareup.okio:okio-jvm:${project.okio_jvm_version}")
     include("org.json:json:${project.json_version}")
 
-    modImplementation include('me.lucko:fabric-permissions-api:0.3.1')
+//    modImplementation include('me.lucko:fabric-permissions-api:0.3.1')
 
     modImplementation include("net.kyori:adventure-text-minimessage:4.17.0")
     modImplementation include("net.kyori:adventure-platform-fabric:5.14.1")

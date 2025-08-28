@@ -4,9 +4,9 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.managers.Raid;
+import me.unariginal.novaraids.utils.NovaRaidsPermissions;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ public class HidePlayersAndPokemon {
                 }
             }
 
-            if (NovaRaids.INSTANCE.config().hideOtherCatchEncounters && !Permissions.check(spectator, "novaraids.showpokemon")) {
+            if (NovaRaids.INSTANCE.config().hideOtherCatchEncounters && !NovaRaidsPermissions.SHOWPOKEMON.test(spectator)) {
                 boolean inRaid = false;
                 for (Raid raid : NovaRaids.INSTANCE.activeRaids().values()) {
                     if (raid.participatingPlayers().contains(spectator.getUuid())) {
@@ -59,7 +59,7 @@ public class HidePlayersAndPokemon {
                     }
                 }
             }
-            if (NovaRaids.INSTANCE.config().hideOtherPokemonInRaid && !Permissions.check(spectator, "novaraids.showpokemon")) {
+            if (NovaRaids.INSTANCE.config().hideOtherPokemonInRaid && !NovaRaidsPermissions.SHOWPOKEMON.test(spectator)) {
                 boolean inRaid = false;
                 for (Raid raid : NovaRaids.INSTANCE.activeRaids().values()) {
                     if (raid.participatingPlayers().contains(spectator.getUuid())) {
@@ -90,7 +90,7 @@ public class HidePlayersAndPokemon {
                 }
             }
         } else if (self instanceof ServerPlayerEntity serverPlayerEntity) {
-            if (NovaRaids.INSTANCE.config().hideOtherPlayersInRaid && !Permissions.check(spectator, "novaraids.showplayers")) {
+            if (NovaRaids.INSTANCE.config().hideOtherPlayersInRaid && !NovaRaidsPermissions.SHOWPLAYERS.test(spectator)) {
                 boolean inRaid = false;
                 for (Raid raid : NovaRaids.INSTANCE.activeRaids().values()) {
                     if (raid.participatingPlayers().contains(spectator.getUuid())) {

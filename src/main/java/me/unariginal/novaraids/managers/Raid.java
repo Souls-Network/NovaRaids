@@ -10,7 +10,6 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.properties.UncatchableProperty;
 import com.mojang.authlib.GameProfile;
 import kotlin.Unit;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.config.MessagesConfig;
 import me.unariginal.novaraids.data.*;
@@ -19,10 +18,7 @@ import me.unariginal.novaraids.data.bosssettings.CatchPlacement;
 import me.unariginal.novaraids.data.rewards.DistributionSection;
 import me.unariginal.novaraids.data.rewards.Place;
 import me.unariginal.novaraids.data.rewards.RewardPool;
-import me.unariginal.novaraids.utils.BanHandler;
-import me.unariginal.novaraids.utils.RandomUtils;
-import me.unariginal.novaraids.utils.TextUtils;
-import me.unariginal.novaraids.utils.WebhookHandler;
+import me.unariginal.novaraids.utils.*;
 import net.kyori.adventure.bossbar.BossBar;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -796,7 +792,7 @@ public class Raid {
 
         ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerUUID);
         if (player != null) {
-            if (!Permissions.check(player, "novaraids.override")) {
+            if (!NovaRaidsPermissions.OVERRIDE.test(player)) {
                 for (Raid raid : nr.activeRaids().values()) {
                     index = raid.getPlayerIndex(playerUUID);
                     if (index != -1) {

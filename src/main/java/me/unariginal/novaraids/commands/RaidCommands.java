@@ -11,7 +11,6 @@ import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SimpleGui;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.commands.suggestions.BossSuggestions;
 import me.unariginal.novaraids.commands.suggestions.CategorySuggestions;
@@ -31,6 +30,7 @@ import me.unariginal.novaraids.data.schedule.Schedule;
 import me.unariginal.novaraids.data.schedule.SpecificSchedule;
 import me.unariginal.novaraids.managers.Raid;
 import me.unariginal.novaraids.utils.GuiUtils;
+import me.unariginal.novaraids.utils.NovaRaidsPermissions;
 import me.unariginal.novaraids.utils.RandomUtils;
 import me.unariginal.novaraids.utils.TextUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -65,12 +65,12 @@ public class RaidCommands {
                     .executes(this::modInfo)
                     .then(
                             CommandManager.literal("reload")
-                                    .requires(Permissions.require("novaraids.reload", 4))
+                                    .requires(NovaRaidsPermissions.RELOAD)
                                     .executes(this::reload)
                     )
                     .then(
                             CommandManager.literal("start")
-                                    .requires(Permissions.require("novaraids.start", 4))
+                                    .requires(NovaRaidsPermissions.START)
                                     .then(
                                             CommandManager.argument("boss", StringArgumentType.string())
                                                     .suggests(new BossSuggestions())
@@ -109,7 +109,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("stop")
-                                    .requires(Permissions.require("novaraids.stop", 4))
+                                    .requires(NovaRaidsPermissions.STOP)
                                     .then(
                                             CommandManager.argument("id", IntegerArgumentType.integer(1))
                                                     .executes(this::stop)
@@ -117,7 +117,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("give")
-                                    .requires(Permissions.require("novaraids.give", 4))
+                                    .requires(NovaRaidsPermissions.GIVE)
                                     .then(
                                             CommandManager.argument("player", EntityArgumentType.player())
                                                     .then(
@@ -248,12 +248,12 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("list")
-                                    .requires(Permissions.require("novaraids.list", 4))
+                                    .requires(NovaRaidsPermissions.LIST)
                                     .executes(this::list)
                     )
                     .then(
                             CommandManager.literal("join")
-                                    .requires(Permissions.require("novaraids.join", 4))
+                                    .requires(NovaRaidsPermissions.JOIN)
                                     .then(
                                             CommandManager.argument("id", IntegerArgumentType.integer(1))
                                                     .executes(ctx -> {
@@ -263,7 +263,7 @@ public class RaidCommands {
                                                                 if (player != null) {
                                                                     if (nr.activeRaids().containsKey(IntegerArgumentType.getInteger(ctx, "id"))) {
                                                                         Raid raid = nr.activeRaids().get(IntegerArgumentType.getInteger(ctx, "id"));
-                                                                        if (raid.participatingPlayers().size() < raid.maxPlayers() || Permissions.check(player, "novaraids.override") || raid.maxPlayers() == -1) {
+                                                                        if (raid.participatingPlayers().size() < raid.maxPlayers() || NovaRaidsPermissions.OVERRIDE.test(player) || raid.maxPlayers() == -1) {
                                                                             if (raid.addPlayer(player.getUuid(), false)) {
                                                                                 player.sendMessage(TextUtils.deserialize(TextUtils.parse(nr.messagesConfig().getMessage("joined_raid"), raid)));
                                                                             }
@@ -280,7 +280,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("leave")
-                                    .requires(Permissions.require("novaraids.leave", 4))
+                                    .requires(NovaRaidsPermissions.LEAVE)
                                     .executes(ctx -> {
                                         if (NovaRaids.LOADED) {
                                             if (ctx.getSource().isExecutedByPlayer()) {
@@ -299,12 +299,12 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("queue")
-                                    .requires(Permissions.require("novaraids.queue", 4))
+                                    .requires(NovaRaidsPermissions.QUEUE)
                                     .executes(ctx -> queue(ctx, 1))
                     )
                     .then(
                             CommandManager.literal("checkbanned")
-                                    .requires(Permissions.require("novaraids.checkbanned", 4))
+                                    .requires(NovaRaidsPermissions.CHECKEDBANNED)
                                     .then(
                                             CommandManager.literal("global")
                                                     .executes(ctx -> checkbanned(ctx, "global"))
@@ -328,7 +328,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("history")
-                                    .requires(Permissions.require("novaraids.history", 4))
+                                    .requires(NovaRaidsPermissions.HISTORY)
                                     .executes(ctx -> {
                                         ctx.getSource().sendMessage(Text.literal("Not Implemented"));
                                         return 1;
@@ -336,7 +336,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("skipphase")
-                                    .requires(Permissions.require("novaraids.skipphase", 4))
+                                    .requires(NovaRaidsPermissions.SKIPPHASE)
                                     .then(
                                             CommandManager.argument("id", IntegerArgumentType.integer(1))
                                                     .executes(this::skipphase)
@@ -344,7 +344,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("testrewards")
-                                    .requires(Permissions.require("novaraids.testrewards", 4))
+                                    .requires(NovaRaidsPermissions.TESTREWARDS)
                                     .then(
                                             CommandManager.argument("boss", StringArgumentType.string())
                                                     .suggests(new BossSuggestions())
@@ -359,7 +359,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("world")
-                                    .requires(Permissions.require("novaraids.world", 4))
+                                    .requires(NovaRaidsPermissions.WORLD)
                                     .executes(ctx -> {
                                         if (ctx.getSource().isExecutedByPlayer()) {
                                             ServerPlayerEntity player = ctx.getSource().getPlayer();
@@ -372,7 +372,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("damage")
-                                    .requires(Permissions.require("novaraids.damage", 4))
+                                    .requires(NovaRaidsPermissions.DAMAGE)
                                     .then(
                                             CommandManager.argument("id", IntegerArgumentType.integer(1))
                                                     .then(
@@ -407,7 +407,7 @@ public class RaidCommands {
                     )
                     .then(
                             CommandManager.literal("schedule")
-                                    .requires(Permissions.require("novaraids.schedule", 4))
+                                    .requires(NovaRaidsPermissions.SCHEDULE)
                                     .executes(ctx -> {
                                         for (Schedule schedule : nr.schedulesConfig().schedules) {
                                             if (schedule instanceof SpecificSchedule specificSchedule) {
@@ -1609,7 +1609,7 @@ public class RaidCommands {
                                     .setLore(lore)
                                     .setCallback((num, clickType, slotActionType) -> {
                                         if (clickType.isLeft) {
-                                            if (raid.participatingPlayers().size() < raid.maxPlayers() || Permissions.check(player, "novaraids.override") || raid.maxPlayers() == -1) {
+                                            if (raid.participatingPlayers().size() < raid.maxPlayers() || NovaRaidsPermissions.OVERRIDE.test(player) || raid.maxPlayers() == -1) {
                                                 if (raid.addPlayer(player.getUuid(), false)) {
                                                     player.sendMessage(TextUtils.deserialize(TextUtils.parse(nr.messagesConfig().getMessage("joined_raid"), raid)));
                                                 }
@@ -1735,7 +1735,7 @@ public class RaidCommands {
                             Boss boss = nr.queuedRaids().stream().toList().get(index).bossInfo();
 
                             List<Text> lore = new ArrayList<>();
-                            if (Permissions.check(player, "novaraids.cancelqueue", 4)) {
+                            if (NovaRaidsPermissions.CANCELQUEUE.test(player)) {
                                 for (String line : nr.guisConfig().queueGui.cancelLore) {
                                     lore.add(TextUtils.deserialize(TextUtils.parse(line, boss)));
                                 }
@@ -1753,7 +1753,7 @@ public class RaidCommands {
                                     .setLore(lore)
                                     .setCallback((num, clickType, slotActionType) -> {
                                         if (clickType.isRight) {
-                                            if (Permissions.check(player, "novaraids.cancelqueue", 4)) {
+                                            if (NovaRaidsPermissions.CANCELQUEUE.test(player)) {
                                                 pageEntry.getValue().close();
                                                 nr.queuedRaids().stream().toList().get(finalIndex).cancelItem();
                                                 player.sendMessage(TextUtils.deserialize(TextUtils.parse(nr.messagesConfig().getMessage("queue_item_cancelled"), boss)));
