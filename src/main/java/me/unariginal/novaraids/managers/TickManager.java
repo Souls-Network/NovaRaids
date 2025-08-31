@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import me.unariginal.novaraids.NovaRaids;
+import me.unariginal.novaraids.commands.RaidCommands;
 import me.unariginal.novaraids.data.Category;
 import me.unariginal.novaraids.data.Task;
 import me.unariginal.novaraids.data.bosssettings.Boss;
@@ -332,7 +333,7 @@ public class TickManager {
                                 if (randomWeight < totalWeight) {
                                     Boss boss = nr.bossesConfig().getRandomBoss(category.id());
                                     if (boss != null) {
-                                        nr.raidCommands().start(boss, null, null);
+                                        RaidCommands.start(boss, null, null);
                                         break;
                                     } else {
                                         nr.logError("Failed to start scheduled raid. Boss was null!");
@@ -344,7 +345,7 @@ public class TickManager {
                             if (boss != null) {
                                 totalWeight += scheduleBoss.weight();
                                 if (randomWeight < totalWeight) {
-                                    nr.raidCommands().start(boss, null, null);
+                                    RaidCommands.start(boss, null, null);
                                     break;
                                 }
                             }

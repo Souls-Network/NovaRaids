@@ -1,7 +1,6 @@
 package me.unariginal.novaraids;
 
 import com.cobblemon.mod.common.api.Priority;
-import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import kotlin.Unit;
 import me.unariginal.novaraids.commands.RaidCommands;
@@ -12,10 +11,11 @@ import me.unariginal.novaraids.managers.Raid;
 import me.unariginal.novaraids.managers.TickManager;
 import me.unariginal.novaraids.utils.WebhookHandler;
 import net.kyori.adventure.platform.modcommon.MinecraftServerAudiences;
-import net.kyori.adventure.platform.modcommon.impl.server.ServerPlayerAudience;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,6 @@ public class NovaRaids {
     public boolean debug = false;
     private MinecraftServer server;
     private MinecraftServerAudiences audience;
-    private RaidCommands raidCommands;
 
     private final Map<Integer, Raid> activeRaids = new HashMap<>();
     private final Queue<QueueItem> queuedRaids = new LinkedList<>();
@@ -49,7 +48,7 @@ public class NovaRaids {
     public NovaRaids(IEventBus bus) {
         INSTANCE = this;
 
-        raidCommands = new RaidCommands();
+        NeoForge.EVENT_BUS.<RegisterCommandsEvent>addListener(event -> RaidCommands.init(event.getDispatcher()));
 
         // Set up event handlers and configuration at server load
         PlatformEvents.SERVER_STARTED.subscribe(Priority.NORMAL, server -> {
@@ -197,10 +196,6 @@ public class NovaRaids {
                 queuedRaids.remove().startRaid();
             }
         }
-    }
-
-    public RaidCommands raidCommands() {
-        return raidCommands;
     }
 
     public int getRaidId(Raid raid) {

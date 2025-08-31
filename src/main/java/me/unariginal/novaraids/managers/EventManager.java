@@ -18,6 +18,7 @@ import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import kotlin.Unit;
 import me.unariginal.novaraids.NovaRaids;
+import me.unariginal.novaraids.commands.RaidCommands;
 import me.unariginal.novaraids.config.MessagesConfig;
 import me.unariginal.novaraids.data.bosssettings.Boss;
 import me.unariginal.novaraids.utils.BanHandler;
@@ -453,7 +454,7 @@ public class EventManager {
                                                     .setLore(lore)
                                                     .setCallback((num, clickType, slotActionType) -> {
                                                         if (clickType.isLeft) {
-                                                            if (nr.raidCommands().start(boss, player, itemStack) != 0) {
+                                                            if (RaidCommands.start(boss, player, itemStack) != 0) {
                                                                 itemStack.decrement(1);
                                                                 player.setStackInHand(hand, itemStack);
 
@@ -560,7 +561,7 @@ public class EventManager {
                                     bossInfo = nr.bossesConfig().getRandomBoss(category);
                                 }
 
-                                if (nr.raidCommands().start(bossInfo, player, itemStack) != 0) {
+                                if (RaidCommands.start(bossInfo, player, itemStack) != 0) {
                                     itemStack.decrement(1);
                                     player.setStackInHand(hand, itemStack);
 
@@ -568,7 +569,7 @@ public class EventManager {
                                 }
                             } else {
                                 Boss boss = nr.bossesConfig().getBoss(bossName);
-                                if (nr.raidCommands().start(boss, player, itemStack) != 0) {
+                                if (RaidCommands.start(boss, player, itemStack) != 0) {
                                     itemStack.decrement(1);
                                     player.setStackInHand(hand, itemStack);
 
