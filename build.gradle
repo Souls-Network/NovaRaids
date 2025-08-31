@@ -32,6 +32,10 @@ repositories {
         name = "NeoForged"
         url = "https://maven.neoforged.net/releases"
     }
+
+    flatDir {
+        dir 'libs'
+    }
 }
 
 dependencies {
@@ -58,7 +62,7 @@ dependencies {
     modImplementation include("net.kyori:adventure-text-minimessage:4.17.0")
     modImplementation include("net.kyori:adventure-platform-neoforge:6.0.1")
 
-    modImplementation include("eu.pb4:sgui:1.6.1+1.21.1")
+    modImplementation include("eu.pb4:sgui:1.9.1+1.21.1-neoforge")
 
     implementation include("com.cronutils:cron-utils:9.2.1")
 

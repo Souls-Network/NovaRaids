@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.data.rewards.Reward;
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,12 +25,12 @@ public class RewardPresetsConfig {
     }
 
     public void loadConfig() throws IOException, NullPointerException, UnsupportedOperationException {
-        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids").toFile();
+        File rootFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids").toFile();
         if (!rootFolder.exists()) {
             rootFolder.mkdirs();
         }
 
-        File file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/reward_presets.json").toFile();
+        File file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/reward_presets.json").toFile();
         JsonObject config = new JsonObject();
         if (file.exists()) config = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
 

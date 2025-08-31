@@ -3,7 +3,7 @@ package me.unariginal.novaraids.config;
 import com.google.gson.*;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.data.schedule.*;
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.fml.loading.FMLPaths;
 import org.apache.logging.log4j.core.util.CronExpression;
 
 import java.io.*;
@@ -12,7 +12,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.time.zone.ZoneRulesException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,12 +108,13 @@ public class SchedulesConfig {
     }
 
     public void loadSchedules() throws IOException, NullPointerException, UnsupportedOperationException, DateTimeException {
-        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids").toFile();
+        File rootFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids").toFile();
         if (!rootFolder.exists()) {
             rootFolder.mkdirs();
         }
 
-        File file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/schedules.json").toFile();
+
+        File file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/schedules.json").toFile();
         JsonObject config = new JsonObject();
         if (file.exists()) config = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
 

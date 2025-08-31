@@ -20,12 +20,12 @@ import me.unariginal.novaraids.data.items.Pass;
 import me.unariginal.novaraids.data.items.RaidBall;
 import me.unariginal.novaraids.data.items.Voucher;
 import me.unariginal.novaraids.data.rewards.*;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.*;
 import java.util.*;
@@ -45,17 +45,17 @@ public class BossesConfig {
     }
 
     public void loadBosses() throws IOException, NullPointerException, UnsupportedOperationException {
-        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids").toFile();
+        File rootFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids").toFile();
         if (!rootFolder.exists()) rootFolder.mkdirs();
 
-        File bossesFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/bosses").toFile();
+        File bossesFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/bosses").toFile();
         if (!bossesFolder.exists()) {
             bossesFolder.mkdirs();
 
-            File exampleCategoryFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/bosses/common/bosses").toFile();
+            File exampleCategoryFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/bosses/common/bosses").toFile();
             if (!exampleCategoryFolder.exists()) exampleCategoryFolder.mkdirs();
 
-            File settingsFile = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/bosses/common/settings.json").toFile();
+            File settingsFile = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/bosses/common/settings.json").toFile();
             if (settingsFile.createNewFile()) {
                 InputStream stream = NovaRaids.class.getResourceAsStream("/raid_config_files/bosses/common/settings.json");
                 assert stream != null;
@@ -71,7 +71,7 @@ public class BossesConfig {
                 out.close();
             }
 
-            File exampleBoss = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/bosses/common/bosses/example_eevee.json").toFile();
+            File exampleBoss = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/bosses/common/bosses/example_eevee.json").toFile();
             if (exampleBoss.createNewFile()) {
                 InputStream stream = NovaRaids.class.getResourceAsStream("/raid_config_files/bosses/common/bosses/example_eevee.json");
                 assert stream != null;

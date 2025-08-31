@@ -1,0 +1,34 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "All-Rights-Reserved"
+authors = ""
+
+[[mixins]]
+config = "novaraids.mixins.jso"
+
+[[mods]]
+modId = "novaraids"
+version = "${version}"
+displayName = "NovaRaids"
+description = "Raid event handler for Cobblemon"
+
+[[dependencies.novaraids]]
+modId="neoforge"
+mandatory=true
+versionRange="[21.1.192,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.novaraids]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.21.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.novaraids]]
+modId="cobblemon"
+mandatory=true
+versionRange="[1.6.1+1.21.1]"
+ordering="AFTER"
+side="BOTH"

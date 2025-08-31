@@ -6,12 +6,15 @@ import me.unariginal.novaraids.data.FieldData;
 import me.unariginal.novaraids.managers.Raid;
 import me.unariginal.novaraids.utils.TextUtils;
 import me.unariginal.novaraids.utils.WebhookHandler;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
 
 public class MessagesConfig {
     public String prefix = "<dark_gray>[</dark_gray><color:#ffbf00>RAID<dark_gray>]</dark_gray>";
@@ -82,12 +85,12 @@ public class MessagesConfig {
     }
 
     public void loadConfig() throws IOException, NullPointerException, UnsupportedOperationException {
-        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids").toFile();
+        File rootFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids").toFile();
         if (!rootFolder.exists()) {
             rootFolder.mkdirs();
         }
 
-        File file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/messages.json").toFile();
+        File file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/messages.json").toFile();
         JsonObject config = new JsonObject();
         if (file.exists()) config = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
 

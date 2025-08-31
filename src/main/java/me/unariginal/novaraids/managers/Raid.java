@@ -19,7 +19,9 @@ import me.unariginal.novaraids.data.rewards.DistributionSection;
 import me.unariginal.novaraids.data.rewards.Place;
 import me.unariginal.novaraids.data.rewards.RewardPool;
 import me.unariginal.novaraids.utils.*;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.ComponentLike;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -141,7 +143,7 @@ public class Raid {
         for (UUID playerUUID : playerBossbars.keySet()) {
             ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerUUID);
             if (player != null) {
-                player.hideBossBar(playerBossbars.get(playerUUID));
+                ((Audience) player).hideBossBar(playerBossbars.get(playerUUID));
             }
         }
 
@@ -760,7 +762,7 @@ public class Raid {
             ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerUUID);
             if (player != null) {
                 markForDeletion.add(playerUUID);
-                player.hideBossBar(bossbars().get(playerUUID));
+                ((Audience) player).hideBossBar(bossbars().get(playerUUID));
                 playerBossbars.remove(playerUUID);
 
                 List<PokemonEntity> toRemove = new ArrayList<>();
@@ -963,7 +965,7 @@ public class Raid {
                 ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerUUID);
                 if (player != null) {
                     BossBar bar = bossbar.createBossBar(this);
-                    player.showBossBar(bar);
+                    ((Audience) player).showBossBar(bar);
                     playerBossbars.put(playerUUID, bar);
                 }
             }
@@ -975,7 +977,7 @@ public class Raid {
         for (UUID playerUUID : playerBossbars.keySet()) {
             ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerUUID);
             if (player != null) {
-                player.hideBossBar(playerBossbars.get(playerUUID));
+                ((Audience) player).hideBossBar(playerBossbars.get(playerUUID));
             }
         }
         playerBossbars.clear();
@@ -988,7 +990,7 @@ public class Raid {
                     clearToDelete = false;
                     ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerUUID);
                     if (player != null) {
-                        player.sendActionBar(TextUtils.deserialize(TextUtils.parse(bossbar.actionbarText(), this)));
+                        ((Audience) player).sendActionBar((ComponentLike) TextUtils.deserialize(TextUtils.parse(bossbar.actionbarText(), this)));
                     }
                 }
                 clearToDelete = true;

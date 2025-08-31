@@ -1,5 +1,9 @@
 package me.unariginal.novaraids;
 
+import com.cobblemon.mod.common.api.Priority;
+import com.cobblemon.mod.common.api.events.CobblemonEvents;
+import com.cobblemon.mod.common.platform.events.PlatformEvents;
+import kotlin.Unit;
 import me.unariginal.novaraids.commands.RaidCommands;
 import me.unariginal.novaraids.config.*;
 import me.unariginal.novaraids.data.QueueItem;
@@ -48,9 +52,9 @@ public class NovaRaids {
         raidCommands = new RaidCommands();
 
         // Set up event handlers and configuration at server load
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            this.server = server;
-            this.audience = MinecraftServerAudiences.of(server);
+        PlatformEvents.SERVER_STARTED.subscribe(Priority.NORMAL, server -> {
+            this.server = server.getServer();
+            this.audience = MinecraftServerAudiences.of(this.server);
 
             reloadConfig();
             if (LOADED) {
@@ -62,10 +66,12 @@ public class NovaRaids {
             } else {
                 LOGGER.error("Config did not load properly!");
             }
+
+            return Unit.INSTANCE;
         });
 
         // Server tick loop
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
+        PlatformEvents.SERVER_TICK_POST.subscribe(Priority.NORMAL, server -> {
             if (LOADED) {
                 try {
                     TickManager.updateWebhooks();
@@ -83,10 +89,11 @@ public class NovaRaids {
                     raid.removePlayers();
                 }
             }
+            return Unit.INSTANCE;
         });
 
         // Clean up at server stop
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+        PlatformEvents.SERVER_STOPPING.subscribe(Priority.NORMAL, server -> {
             if (LOADED) {
                 for (QueueItem queue : queuedRaids) {
                     queue.cancelItem();
@@ -98,6 +105,8 @@ public class NovaRaids {
                 }
                 // TODO: Save current raid, write queue to file
             }
+
+            return Unit.INSTANCE;
         });
     }
 

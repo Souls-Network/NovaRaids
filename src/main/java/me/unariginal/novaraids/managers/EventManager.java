@@ -11,6 +11,7 @@ import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.PokeBallItem;
 import com.cobblemon.mod.common.item.PokemonItem;
+import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
@@ -23,9 +24,6 @@ import me.unariginal.novaraids.utils.BanHandler;
 import me.unariginal.novaraids.utils.GuiUtils;
 import me.unariginal.novaraids.utils.NovaRaidsPermissions;
 import me.unariginal.novaraids.utils.TextUtils;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Entity;
@@ -38,7 +36,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.*;
 
@@ -215,7 +215,10 @@ public class EventManager {
     }
 
     public static void rightClickEvents() {
-        UseItemCallback.EVENT.register((playerEntity, world, hand) -> {
+        NeoForge.EVENT_BUS.<PlayerInteractEvent.RightClickItem>addListener(event -> {
+            var playerEntity = event.getEntity();
+            var hand = event.getHand();
+
             ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerEntity.getUuid());
             if (player != null) {
                 ItemStack itemStack = player.getStackInHand(hand);
@@ -383,7 +386,8 @@ public class EventManager {
                             } else {
                                 for (Raid raid : nr.activeRaids().values()) {
                                     if (raid.participatingPlayers().contains(player.getUuid())) {
-                                        return TypedActionResult.fail(itemStack);
+                                        event.setCancellationResult(ActionResult.FAIL);
+                                        event.setCanceled(true);
                                     }
 
                                     if (raid.bossInfo().bossId().equalsIgnoreCase(bossName)) {
@@ -577,7 +581,8 @@ public class EventManager {
                             if (nr.config().playerLinkedRaidBalls && customData.contains("owner_uuid")) {
                                 if (!customData.copyNbt().getUuid("owner_uuid").equals(player.getUuid())) {
                                     player.sendMessage(TextUtils.deserialize(TextUtils.parse(messages.getMessage("warning_not_your_raid_pokeball"))));
-                                    return TypedActionResult.fail(itemStack);
+                                    event.setCancellationResult(ActionResult.FAIL);
+                                    event.setCanceled(true);
                                 }
                             }
 
@@ -630,15 +635,19 @@ public class EventManager {
                                 }
                             } else {
                                 player.sendMessage(TextUtils.deserialize(TextUtils.parse(messages.getMessage("warning_raid_pokeball_outside_raid"))));
-                                return TypedActionResult.fail(itemStack);
+                                event.setCancellationResult(ActionResult.FAIL);
+                                event.setCanceled(true);
                             }
 
                             if (!canThrow) {
                                 player.sendMessage(TextUtils.deserialize(TextUtils.parse(messages.getMessage("warning_not_catch_phase"))));
-                                return TypedActionResult.fail(itemStack);
+                                event.setCancellationResult(ActionResult.FAIL);
                             } else {
-                                return TypedActionResult.pass(itemStack);
+                                event.setCancellationResult(ActionResult.PASS);
+
                             }
+
+                            event.setCanceled(true);
                         }
                     }
                 }
@@ -647,7 +656,8 @@ public class EventManager {
                     for (Raid raid : nr.activeRaids().values()) {
                         if (raid.participatingPlayers().contains(player.getUuid())) {
                             player.sendMessage(TextUtils.deserialize(TextUtils.parse(messages.getMessage("warning_deny_normal_pokeball"))));
-                            return TypedActionResult.fail(itemStack);
+                            event.setCancellationResult(ActionResult.FAIL);
+                            event.setCanceled(true);
                         }
                     }
                 }
@@ -659,14 +669,15 @@ public class EventManager {
                         bannedBagItems.addAll(raid.raidBossCategory().contraband().bannedBagItems());
                         if (bannedBagItems.contains(itemStack.getItem())) {
                             player.sendMessage(TextUtils.deserialize(TextUtils.parse(messages.getMessage("warning_banned_bag_item").replaceAll("%banned.bag_item%", itemStack.getItem().getName().getString()), raid)));
-                            return TypedActionResult.fail(itemStack);
+                            event.setCancellationResult(ActionResult.FAIL);
+                            event.setCanceled(true);
                         }
                     }
                 }
 
-                return TypedActionResult.pass(itemStack);
+                event.setCancellationResult(ActionResult.PASS);
+                event.setCanceled(true);
             }
-            return null;
         });
     }
 
@@ -680,24 +691,25 @@ public class EventManager {
     }
 
     public static void playerEvents() {
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+        PlatformEvents.CLIENT_PLAYER_LOGOUT.subscribe(Priority.NORMAL, handler -> {
             for (Raid raid : nr.activeRaids().values()) {
                 raid.removePlayer(handler.getPlayer().getUuid());
                 if (raid.stage() > 1 && raid.participatingPlayers().isEmpty()) {
                     raid.stop();
                 }
             }
+
+            return Unit.INSTANCE;
         });
 
-        AttackEntityCallback.EVENT.register(((playerEntity, world, hand, entity, entityHitResult) -> {
-            if (entity instanceof PokemonEntity pokemonEntity) {
+        NeoForge.EVENT_BUS.<AttackEntityEvent>addListener(event -> {
+            if (event.getTarget() instanceof PokemonEntity pokemonEntity) {
                 Pokemon pokemon = pokemonEntity.getPokemon();
                 if (pokemon.getPersistentData().contains("raid_entity")) {
-                    return ActionResult.FAIL;
+                    event.setCanceled(true);
                 }
             }
-            return ActionResult.PASS;
-        }));
+        });
     }
 
     public static void cobblemonEvents() {

@@ -4,8 +4,8 @@ import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.data.guis.*;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.component.ComponentChanges;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.*;
 import java.util.List;
@@ -448,17 +448,17 @@ public class GuisConfig {
     }
 
     public void loadGuis() throws IOException, NullPointerException, UnsupportedOperationException {
-        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids").toFile();
+        File rootFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids").toFile();
         if (!rootFolder.exists()) {
             rootFolder.mkdirs();
         }
 
-        File guisFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis").toFile();
+        File guisFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis").toFile();
         if (!guisFolder.exists()) {
             guisFolder.mkdirs();
         }
 
-        File file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis/raid_list.json").toFile();
+        File file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis/raid_list.json").toFile();
         loadRaidList(file);
 
         file.delete();
@@ -468,7 +468,7 @@ public class GuisConfig {
         gson.toJson(raidListGui.guiObject, writer);
         writer.close();
 
-        file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis/raid_queue.json").toFile();
+        file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis/raid_queue.json").toFile();
         loadRaidQueue(file);
 
         file.delete();
@@ -478,13 +478,13 @@ public class GuisConfig {
         gson.toJson(queueGui.guiObject, writer);
         writer.close();
 
-        file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis/raid_voucher.json").toFile();
+        file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis/raid_voucher.json").toFile();
         loadRaidVoucher(file);
 
-        file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis/raid_pass.json").toFile();
+        file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis/raid_pass.json").toFile();
         loadRaidPass(file);
 
-        file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis/global_contraband.json").toFile();
+        file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis/global_contraband.json").toFile();
         globalContrabandGui = loadContrabandGui(file, globalContrabandGui);
 
         file.delete();
@@ -494,7 +494,7 @@ public class GuisConfig {
         gson.toJson(globalContrabandGui.guiObject, writer);
         writer.close();
 
-        file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis/category_contraband.json").toFile();
+        file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis/category_contraband.json").toFile();
         categoryContrabandGui = loadContrabandGui(file, categoryContrabandGui);
 
         file.delete();
@@ -504,7 +504,7 @@ public class GuisConfig {
         gson.toJson(categoryContrabandGui.guiObject, writer);
         writer.close();
 
-        file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/guis/boss_contraband.json").toFile();
+        file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/guis/boss_contraband.json").toFile();
         bossContrabandGui = loadContrabandGui(file, bossContrabandGui);
 
         file.delete();

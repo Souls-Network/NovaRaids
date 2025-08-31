@@ -9,8 +9,8 @@ import me.unariginal.novaraids.data.items.RaidBall;
 import me.unariginal.novaraids.data.items.Voucher;
 import me.unariginal.novaraids.managers.Raid;
 import me.unariginal.novaraids.utils.TextUtils;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.UserCache;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -59,12 +59,12 @@ public class Config {
     }
 
     public void loadConfig() throws IOException, NullPointerException, UnsupportedOperationException {
-        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids").toFile();
+        File rootFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids").toFile();
         if (!rootFolder.exists()) {
             rootFolder.mkdirs();
         }
 
-        File file = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/config.json").toFile();
+        File file = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/config.json").toFile();
 
         JsonObject config = new JsonObject();
         if (file.exists()) config = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
@@ -256,10 +256,10 @@ public class Config {
     }
 
     public void writeResults(Raid raid) throws IOException, NoSuchElementException {
-        File historyFolder = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/history/" + raid.raidBossCategory().id()).toFile();
+        File historyFolder = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/history/" + raid.raidBossCategory().id()).toFile();
         if (!historyFolder.exists()) historyFolder.mkdirs();
 
-        File historyFile = FabricLoader.getInstance().getConfigDir().resolve("NovaRaids/history/" + raid.raidBossCategory().id() + "/" + raid.bossInfo().bossId() + ".json").toFile();
+        File historyFile = FMLPaths.CONFIGDIR.get().resolve("NovaRaids/history/" + raid.raidBossCategory().id() + "/" + raid.bossInfo().bossId() + ".json").toFile();
 
         JsonObject root = new JsonObject();
         if (historyFile.exists()) root = JsonParser.parseReader(new FileReader(historyFile)).getAsJsonObject();

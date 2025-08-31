@@ -34,7 +34,6 @@ import me.unariginal.novaraids.utils.GuiUtils;
 import me.unariginal.novaraids.utils.NovaRaidsPermissions;
 import me.unariginal.novaraids.utils.RandomUtils;
 import me.unariginal.novaraids.utils.TextUtils;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
@@ -341,7 +340,7 @@ public class RaidCommands {
                                     .requires(NovaRaidsPermissions.SKIPPHASE)
                                     .then(
                                             CommandManager.argument("id", IntegerArgumentType.integer(1))
-                                                    .executes(this::skipphase)
+                                                    .executes(RaidCommands::skipphase)
                                     )
                     )
                     .then(
@@ -456,7 +455,7 @@ public class RaidCommands {
                                         return 1;
                                     })
                     )
-        ));
+        );
     }
 
     private static int reload(CommandContext<ServerCommandSource> ctx) {
