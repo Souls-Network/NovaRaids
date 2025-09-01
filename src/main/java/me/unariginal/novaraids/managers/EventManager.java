@@ -675,9 +675,6 @@ public class EventManager {
                         }
                     }
                 }
-
-                event.setCancellationResult(ActionResult.PASS);
-                event.setCanceled(true);
             }
         });
     }

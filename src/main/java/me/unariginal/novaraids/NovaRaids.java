@@ -10,7 +10,6 @@ import me.unariginal.novaraids.managers.EventManager;
 import me.unariginal.novaraids.managers.Raid;
 import me.unariginal.novaraids.managers.TickManager;
 import me.unariginal.novaraids.utils.WebhookHandler;
-import net.kyori.adventure.platform.modcommon.MinecraftServerAudiences;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -40,7 +39,6 @@ public class NovaRaids {
 
     public boolean debug = false;
     private MinecraftServer server;
-    private MinecraftServerAudiences audience;
 
     private final Map<Integer, Raid> activeRaids = new HashMap<>();
     private final Queue<QueueItem> queuedRaids = new LinkedList<>();
@@ -53,7 +51,6 @@ public class NovaRaids {
         // Set up event handlers and configuration at server load
         PlatformEvents.SERVER_STARTED.subscribe(Priority.NORMAL, server -> {
             this.server = server.getServer();
-            this.audience = MinecraftServerAudiences.of(this.server);
 
             reloadConfig();
             if (LOADED) {
@@ -154,10 +151,6 @@ public class NovaRaids {
 
     public MinecraftServer server() {
         return server;
-    }
-
-    public MinecraftServerAudiences audience() {
-        return audience;
     }
 
     public Logger logger() {

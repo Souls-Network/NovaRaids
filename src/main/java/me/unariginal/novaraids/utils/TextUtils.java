@@ -7,12 +7,13 @@ import me.unariginal.novaraids.managers.Raid;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import org.spongepowered.common.adventure.SpongeAdventure;
 
 public class TextUtils {
     private static final NovaRaids nr = NovaRaids.INSTANCE;
 
     public static Text deserialize(String text) {
-        return nr.audience().asNative(MiniMessage.miniMessage().deserialize("<!i>" + text));
+        return SpongeAdventure.asVanilla(MiniMessage.miniMessage().deserialize("<!i>" + text));
     }
 
     public static String parse(String text) {

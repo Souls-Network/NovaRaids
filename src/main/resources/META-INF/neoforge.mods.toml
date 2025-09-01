@@ -4,11 +4,11 @@ license = "All-Rights-Reserved"
 authors = ""
 
 [[mixins]]
-config = "novaraids.mixins.jso"
+config = "novaraids.mixins.json"
 
 [[mods]]
 modId = "novaraids"
-version = "${version}"
+version = "0.3.2"
 displayName = "NovaRaids"
 description = "Raid event handler for Cobblemon"
 
@@ -29,6 +29,6 @@ side="BOTH"
 [[dependencies.novaraids]]
 modId="cobblemon"
 mandatory=true
-versionRange="[1.6.1+1.21.1]"
+versionRange="[1.7.0+1.21.1-HEAD-3a074bf]"
 ordering="AFTER"
 side="BOTH"

@@ -12,7 +12,10 @@ import com.mojang.authlib.GameProfile;
 import kotlin.Unit;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.config.MessagesConfig;
-import me.unariginal.novaraids.data.*;
+import me.unariginal.novaraids.data.BossbarData;
+import me.unariginal.novaraids.data.Category;
+import me.unariginal.novaraids.data.Location;
+import me.unariginal.novaraids.data.Task;
 import me.unariginal.novaraids.data.bosssettings.Boss;
 import me.unariginal.novaraids.data.bosssettings.CatchPlacement;
 import me.unariginal.novaraids.data.rewards.DistributionSection;
@@ -21,7 +24,6 @@ import me.unariginal.novaraids.data.rewards.RewardPool;
 import me.unariginal.novaraids.utils.*;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.ComponentLike;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -33,6 +35,7 @@ import net.minecraft.util.UserCache;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.StringUtils;
+import org.spongepowered.common.adventure.AdventureTextComponent;
 
 import java.io.IOException;
 import java.util.*;
@@ -990,7 +993,7 @@ public class Raid {
                     clearToDelete = false;
                     ServerPlayerEntity player = nr.server().getPlayerManager().getPlayer(playerUUID);
                     if (player != null) {
-                        ((Audience) player).sendActionBar((ComponentLike) TextUtils.deserialize(TextUtils.parse(bossbar.actionbarText(), this)));
+                        ((Audience) player).sendActionBar(((AdventureTextComponent) TextUtils.deserialize(TextUtils.parse(bossbar.actionbarText(), this))).wrapped());
                     }
                 }
                 clearToDelete = true;

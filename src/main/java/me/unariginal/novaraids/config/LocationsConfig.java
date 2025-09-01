@@ -6,11 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.unariginal.novaraids.NovaRaids;
 import me.unariginal.novaraids.data.Location;
-import net.kyori.adventure.platform.modcommon.impl.PlatformHooks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.io.*;
 import java.util.ArrayList;
