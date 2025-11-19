@@ -62,11 +62,13 @@ dependencies {
     modImplementation include("net.kyori:adventure-text-minimessage:4.17.0")
     modImplementation include("net.kyori:adventure-platform-neoforge:6.0.1")
 
-    modImplementation include("eu.pb4:sgui:1.9.1+1.21.1-neoforge")
+//    modImplementation include("eu.pb4:sgui:1.9.1+1.21.1-neoforge")
+    implementation include(files("libs/sgui-1.9.1+1.21.1-neoforge.jar"))
 
-    implementation include("com.cronutils:cron-utils:9.2.1")
+    modImplementation files("libs/cobblemon-1.7.0+1.21.1-neoforge.jar")
+//    modImplementation "com.cobblemon:cobblemon:1.7.0+1.21.1-neoforge@jar"
 
-    modImplementation "com.cobblemon:neoforge:${project.cobblemon_version}"
+//    modImplementation "com.cobblemon:neoforge:${project.cobblemon_version}"
 }
 
 processResources {
