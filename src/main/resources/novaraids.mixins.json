@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.unariginal.novaraids.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BattleEndMixin",
+    "CatchEncounterTrackerMixin",
+    "CatchPokeBallTargetMixin",
+    "HidePlayersAndPokemon",
+    "PreventDrops",
+    "PreventHeldItems"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

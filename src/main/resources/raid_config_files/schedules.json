@@ -1,0 +1,61 @@
+{
+  "timezone": "UTC-05:00",
+  "schedules": [
+    {
+      "type": "random",
+      "bounds": {
+        "min": 1200,
+        "max": 3600
+      },
+      "bosses": [
+        {
+          "type": "category",
+          "category": "tier-1",
+          "weight": 5.0
+        }
+      ]
+    },
+    {
+      "type": "cron",
+      "expression": "0 30 * ? * *",
+      "bosses": [
+        {
+          "type": "category",
+          "category": "tier-1",
+          "weight": 5.0
+        }
+      ]
+    },
+    {
+      "type": "cron",
+      "expression": "@hourly",
+      "bosses": [
+        {
+          "type": "category",
+          "category": "tier-1",
+          "weight": 5.0
+        }
+      ]
+    },
+    {
+      "type": "specific",
+      "times": [
+        "00:00",
+        "00:15",
+        "00:30",
+        "00:45",
+        "01:00",
+        "01:43:01",
+        "01:54:32",
+        "01:59:59"
+      ],
+      "bosses": [
+        {
+          "type": "category",
+          "category": "tier-1",
+          "weight": 5.0
+        }
+      ]
+    }
+  ]
+}
